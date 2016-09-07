@@ -29,8 +29,8 @@ public class Server implements Runnable {
         this.jChat = jChat;
         hostName = host;
         portNumber = port;
-        jChat.receiveMessage("Test2");
-        commands = new Command[] {new AuthenticateCommand(), new UserListCommand(), new StopCommand(), new SignInCommand(), new SignUpCommand(), new PromoteCommand(), new PrivateMessageCommand() };
+        //jChat.receiveMessage("Test2");
+        commands = new Command[] {new AuthenticateCommand(), new UserListCommand(), new StopCommand(), new SignInCommand(), new SignUpCommand(), new PromoteCommand(), new PrivateMessageCommand(), new SignOutCommand() };
         portNumber = port;
         hostName = host;
     }

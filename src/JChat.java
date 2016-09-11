@@ -11,6 +11,7 @@ import java.awt.*;
 public class JChat {
     ChatGui chatGui;
     Server server;
+    StartUpGui startUpGui;
     String hostname;
     String nick;
     int port;
@@ -18,16 +19,42 @@ public class JChat {
         new JChat();
     }
     public JChat () {
-        hostname = JOptionPane.showInputDialog(null, "Hostname:");
-        port = Integer.parseInt(JOptionPane.showInputDialog(null, "Port:"));
+        //hostname = JOptionPane.showInputDialog(null, "Hostname:");
+        //port = Integer.parseInt(JOptionPane.showInputDialog(null, "Port:"));
         //port = 16000;
+
+        //startup gui calls start() when the user presses the start button
+        startUpGui = new StartUpGui(this);
+
+        //chatGui = new ChatGui(this);
+        //server = new Server(this, hostname, port);
+        //nick = "Anon";
+        //server.run();
+    }
+    public void start(String hostName, int portNumber, String nick, String user, String pass, boolean authType) {
+        this.nick = nick;
         chatGui = new ChatGui(this);
-        server = new Server(this, hostname, port);
-        nick = "Anon";
-        server.run();
+        server = new Server(this, hostName, portNumber);
+        new Thread(server).start();
+        if (authType) {
+            server.parseMessage("/signup " + user + " " + pass);
+        }
+        else {
+            server.parseMessage("/signin " + user + " " + pass);
+        }
+
+    }
+    public void start(String hostName, int portNumber, String nick) {
+
+        this.nick = nick;
+        chatGui = new ChatGui(this);
+        server = new Server(this, hostName, portNumber);
+        new Thread(server).start();
+
     }
     //This recievs messages from the gui's textbox, and sends to internal server
     public void sendMessage (String message) {
+
         if (message.startsWith("/")) {
             if (message.startsWith("/nick")) {
                 nick = message.substring(6);

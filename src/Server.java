@@ -1,6 +1,9 @@
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Stack;
 
 /**
  * Created by Evan on 8/30/2016.
@@ -21,7 +24,7 @@ public class Server implements Runnable {
 
     int delay;
 
-
+    ArrayList messages;
 
     //Socket echoSocket;
 
@@ -33,6 +36,8 @@ public class Server implements Runnable {
         commands = new Command[] {new AuthenticateCommand(), new UserListCommand(), new StopCommand(), new SignInCommand(), new SignUpCommand(), new PromoteCommand(), new PrivateMessageCommand(), new SignOutCommand() };
         portNumber = port;
         hostName = host;
+        messages = new ArrayList();
+
     }
 
     public void run () {
@@ -61,9 +66,23 @@ public class Server implements Runnable {
                         }
                     }
                     strOld = strIn;
-
                     if (pendingMessageBol) {
-                        out.writeUTF(pendingMessageStr);
+                        Iterator iterator = messages.iterator();
+                        String total = "";
+                        boolean isFirst = false;
+                        while (iterator.hasNext()) {
+                            String m = (String)iterator.next();
+                            if (isFirst) {
+                                total += m + "\n";
+                            }
+                            else {
+                                isFirst = true;
+                                total += m;
+                            }
+                            //out.writeUTF(m);
+                        }
+                        out.writeUTF(total);
+                        messages = new ArrayList();
                         pendingMessageBol = false;
                     }
                     else {
@@ -99,7 +118,8 @@ public class Server implements Runnable {
                         break;
                     }
                     else {
-                        pendingMessageStr = jChat.nick + "," + c.name + result;
+                        messages.add(jChat.nick + "," + c.name + result);
+
                         pendingMessageBol = true;
                         break;
                     }
@@ -107,7 +127,7 @@ public class Server implements Runnable {
             }
         }
         else {
-            pendingMessageStr = jChat.nick + ",Message," + message;
+            messages.add(jChat.nick + ",Message," + message);
             pendingMessageBol = true;
         }
 

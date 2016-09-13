@@ -73,7 +73,7 @@ public class Server implements Runnable {
                         while (iterator.hasNext()) {
                             String m = (String)iterator.next();
                             if (isFirst) {
-                                total += m + "\n";
+                                total += "\n" + m;
                             }
                             else {
                                 isFirst = true;
@@ -110,18 +110,37 @@ public class Server implements Runnable {
             String split[] = message.split(" ");
             String name = split[0];
             //Command
-            for (Command c : commands) {
-                if (c.name.equals(name)) {
-                    String result = c.parse(message);
-                    if (result.equals("invalid")) {
-                        jChat.receiveMessage("c000000000,Invalid usage of: " + c.name + "\n" + c.help);
-                        break;
+            if (message.startsWith("/help")) {
+                if (split.length == 2) {
+                    for (Command c: commands) {
+                        if (c.name.equals(split[1])) {
+                            jChat.receiveMessage("c000000000,Help: " + c.name + " " + c.help + "\n");
+                        }
                     }
-                    else {
-                        messages.add(jChat.nick + "," + c.name + result);
+                }
+                else {
+                    String total = "c000000000,";
+                    for (Command c: commands) {
+                        total += "Help: " + c.name + " " + c.help + "\n";
+                    }
+                    jChat.receiveMessage(total);
+                }
 
-                        pendingMessageBol = true;
-                        break;
+            }
+            else {
+                for (Command c : commands) {
+                    if (c.name.equals(name)) {
+                        String result = c.parse(message);
+                        if (result.equals("invalid")) {
+                            jChat.receiveMessage("c000000000,Invalid usage of: " + c.name + "\n" + c.help + "\n");
+                            break;
+                        }
+                        else {
+                            messages.add(jChat.nick + "," + c.name + result);
+
+                            pendingMessageBol = true;
+                            break;
+                        }
                     }
                 }
             }

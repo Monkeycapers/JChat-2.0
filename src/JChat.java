@@ -24,6 +24,7 @@ public class JChat {
         //port = 16000;
 
         //startup gui calls start() when the user presses the start button
+        Settings.load();
         startUpGui = new StartUpGui(this);
 
         //chatGui = new ChatGui(this);

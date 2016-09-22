@@ -40,17 +40,17 @@ public class StartUpGui extends JFrame {
         //Hostname
         hostnameLabel = new JLabel("Hostname: ");
         add(hostnameLabel);
-        hostnameField = new JTextField();
+        hostnameField = new JTextField(Settings.getProperty("host"));
         add(hostnameField);
         //Portnumber
         portNumberLabel = new JLabel("Portnumber: ");
         add(portNumberLabel);
-        portNumberField = new JTextField();
+        portNumberField = new JTextField(Settings.getProperty("port"));
         add(portNumberField);
         //Nickname
         nickLabel = new JLabel("Nickname: ");
         add(nickLabel);
-        nickField = new JTextField("guest");
+        nickField = new JTextField(Settings.getProperty("nick"));
         add(nickField);
         //Toggle logging in
         enableLoginLabel = new JLabel("Login or Signup right away: ");
@@ -71,7 +71,7 @@ public class StartUpGui extends JFrame {
         userLabel = new JLabel("Username: ");
         //userLabel.setEnabled(false);
         add(userLabel);
-        userField = new JTextField();
+        userField = new JTextField(Settings.getProperty("user"));
         //userField.setEnabled(false);
         add(userField);
         //password
@@ -111,16 +111,23 @@ public class StartUpGui extends JFrame {
             String hostName = hostnameField.getText();
             int portNumber = Integer.parseInt(portNumberField.getText());
             String nick = nickField.getText();
+            Settings.writePropertys(new String[] {"host", "port", "nick", "user"}, new String[] {hostName, String.valueOf(portNumber), nick, userField.getText()});
             if (enableLoginToggle.isSelected()) {
                 if (enableLoginRadio.isSelected()) {
                     jChat.start(hostName, portNumber, nick, userField.getText(), String.valueOf(passwordField.getPassword()), false);
+                    setVisible(false);
+                    this.dispose();
                 }
                 else {
                     jChat.start(hostName, portNumber, nick, userField.getText(), String.valueOf(passwordField.getPassword()), true);
+                    setVisible(false);
+                    this.dispose();
                 }
             }
             else {
                 jChat.start(hostName, portNumber, nick);
+                setVisible(false);
+                this.dispose();
             }
         }
         catch (Exception e) {

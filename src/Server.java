@@ -33,7 +33,7 @@ public class Server implements Runnable {
         hostName = host;
         portNumber = port;
         //jChat.receiveMessage("Test2");
-        commands = new Command[] {new AuthenticateCommand(), new UserListCommand(), new StopCommand(), new SignInCommand(), new SignUpCommand(), new PromoteCommand(), new PrivateMessageCommand(), new SignOutCommand() };
+        commands = new Command[] {new AuthenticateCommand(), new UserListCommand(), new StopCommand(), new SignInCommand(), new SignUpCommand(), new PromoteCommand(), new PrivateMessageCommand(), new SignOutCommand(), new LobbyJoinCommand(), new LobbyCreateCommand(), new LobbyListCommand() };
         portNumber = port;
         hostName = host;
         messages = new ArrayList();

@@ -103,6 +103,9 @@ public class ChatGui extends JFrame {
             exc.printStackTrace();
         }
     }
+    public void clearScreen() {
+        jTextPane.setText("");
+    }
     public void addText(String message) {
 
     }

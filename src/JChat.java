@@ -60,6 +60,9 @@ public class JChat {
             if (message.startsWith("/nick")) {
                 nick = message.substring(6);
             }
+            else if (message.startsWith("/clear")){
+                chatGui.clearScreen();
+            }
             else {
                 //Command for server
 

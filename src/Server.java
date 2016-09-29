@@ -55,6 +55,7 @@ public class Server implements Runnable {
                     DataInputStream in = new DataInputStream(inFromServer);
             ) {
                 //Code
+                jChat.chatGui.clearScreen();
                 System.out.println("Connected to " + hostName + ":" + portNumber);
                 jChat.receiveMessage("c000000000,Connected to " + hostName + ":" + portNumber + "\n");
                 String strOld = "";

@@ -54,6 +54,8 @@ public class JChat {
         chatGui = new ChatGui(this);
         server = new Server(this, hostName, portNumber);
         new Thread(server).start();
+        //Give some time for the server to connect
+        try {Thread.sleep(100); } catch (Exception e) { }
         if (authType) {
             server.parseMessage("/signup " + user + " " + pass);
         }

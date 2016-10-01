@@ -24,11 +24,9 @@ public class Server implements Runnable {
 
     int delay;
 
-    ArrayList messages;
-
-    //Socket echoSocket;
-
     String cString = "c255255255";
+
+    ServerMessageSender serverMessageSender;
 
     public Server (JChat jChat, String host, int port) {
         this.jChat = jChat;
@@ -38,8 +36,6 @@ public class Server implements Runnable {
         commands = new Command[] {new AuthenticateCommand(), new UserListCommand(), new StopCommand(), new SignInCommand(), new SignUpCommand(), new PromoteCommand(), new PrivateMessageCommand(), new SignOutCommand(), new LobbyJoinCommand(), new LobbyCreateCommand(), new LobbyListCommand() };
         portNumber = port;
         hostName = host;
-        messages = new ArrayList();
-
     }
 
     public void run () {
@@ -47,56 +43,28 @@ public class Server implements Runnable {
         while (isRunning) {
             //do server stuff
             //Get a Socket connection to the host
-
             try (
                     Socket echoSocket = new Socket(hostName, portNumber);     //new InputStreamReader(System.in))
-
                     OutputStream outToServer = echoSocket.getOutputStream();
                     DataOutputStream out = new DataOutputStream(outToServer);
                     InputStream inFromServer = echoSocket.getInputStream();
                     DataInputStream in = new DataInputStream(inFromServer);
             ) {
                 //Setup Code
+                //echoSocket.setSoTimeout(10);
                 jChat.chatGui.clearScreen();
                 System.out.println("Connected to " + hostName + ":" + portNumber);
                 jChat.receiveMessage(cString + ",Connected to " + hostName + ":" + portNumber + "\n");
                 String strOld = "";
-
+                serverMessageSender = new ServerMessageSender(out);
+                //
                 while (isRunning) {
-
-                    //in
+                    //Read message in
                     String strIn = in.readUTF();
                     if (!strIn.equals(strOld)) {
-                        if (!strIn.equals("Alive")) {
-                            jChat.receiveMessage(strIn + "\n");
-                        }
+                        jChat.receiveMessage(strIn + "\n");
                     }
                     strOld = strIn;
-                    //out
-                    if (pendingMessageBol) {
-                        Iterator iterator = messages.iterator();
-                        String total = "";
-                        boolean isFirst = false;
-                        while (iterator.hasNext()) {
-                            String m = (String)iterator.next();
-                            if (isFirst) {
-                                total += "\n" + m;
-                            }
-                            else {
-                                isFirst = true;
-                                total += m;
-                            }
-                            //out.writeUTF(m);
-                        }
-                        out.writeUTF(total);
-                        messages = new ArrayList();
-                        pendingMessageBol = false;
-                    }
-                    else {
-                        out.writeUTF(jChat.nick + ",Alive");
-                    }
-                    //sleep
-                    try {Thread.sleep(delay);} catch (Exception ex) { }
                 }
 
 
@@ -133,7 +101,6 @@ public class Server implements Runnable {
                     }
                     jChat.receiveMessage(total);
                 }
-
             }
             else {
                 for (Command c : commands) {
@@ -144,9 +111,7 @@ public class Server implements Runnable {
                             break;
                         }
                         else {
-                            messages.add(jChat.nick + "," + c.name + result);
-
-                            pendingMessageBol = true;
+                            serverMessageSender.send(jChat.nick + "," + c.name + result);
                             break;
                         }
                     }
@@ -154,13 +119,7 @@ public class Server implements Runnable {
             }
         }
         else {
-            messages.add(jChat.nick + ",Message," + message);
-            pendingMessageBol = true;
+            serverMessageSender.send(jChat.nick + ",Message," + message);
         }
-
     }
-
-
-
-
 }

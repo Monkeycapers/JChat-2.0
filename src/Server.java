@@ -28,6 +28,8 @@ public class Server implements Runnable {
 
     //Socket echoSocket;
 
+    String cString = "c255255255";
+
     public Server (JChat jChat, String host, int port) {
         this.jChat = jChat;
         hostName = host;
@@ -54,12 +56,15 @@ public class Server implements Runnable {
                     InputStream inFromServer = echoSocket.getInputStream();
                     DataInputStream in = new DataInputStream(inFromServer);
             ) {
-                //Code
+                //Setup Code
                 jChat.chatGui.clearScreen();
                 System.out.println("Connected to " + hostName + ":" + portNumber);
-                jChat.receiveMessage("c000000000,Connected to " + hostName + ":" + portNumber + "\n");
+                jChat.receiveMessage(cString + ",Connected to " + hostName + ":" + portNumber + "\n");
                 String strOld = "";
+
                 while (isRunning) {
+
+                    //in
                     String strIn = in.readUTF();
                     if (!strIn.equals(strOld)) {
                         if (!strIn.equals("Alive")) {
@@ -67,6 +72,7 @@ public class Server implements Runnable {
                         }
                     }
                     strOld = strIn;
+                    //out
                     if (pendingMessageBol) {
                         Iterator iterator = messages.iterator();
                         String total = "";
@@ -89,6 +95,7 @@ public class Server implements Runnable {
                     else {
                         out.writeUTF(jChat.nick + ",Alive");
                     }
+                    //sleep
                     try {Thread.sleep(delay);} catch (Exception ex) { }
                 }
 
@@ -115,12 +122,12 @@ public class Server implements Runnable {
                 if (split.length == 2) {
                     for (Command c: commands) {
                         if (c.name.equals(split[1])) {
-                            jChat.receiveMessage("c000000000,Help: " + c.name + " " + c.help + "\n");
+                            jChat.receiveMessage("c255255255,Help: " + c.name + " " + c.help + "\n");
                         }
                     }
                 }
                 else {
-                    String total = "c000000000,";
+                    String total = "c255255255,";
                     for (Command c: commands) {
                         total += "Help: " + c.name + " " + c.help + "\n";
                     }
@@ -133,7 +140,7 @@ public class Server implements Runnable {
                     if (c.name.equals(name)) {
                         String result = c.parse(message);
                         if (result.equals("invalid")) {
-                            jChat.receiveMessage("c000000000,Invalid usage of: " + c.name + "\n" + c.help + "\n");
+                            jChat.receiveMessage("c255255255,Invalid usage of: " + c.name + "\n" + c.help + "\n");
                             break;
                         }
                         else {

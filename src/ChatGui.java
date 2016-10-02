@@ -3,6 +3,7 @@
 import sun.font.FontFamily;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicMenuBarUI;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -20,7 +21,12 @@ public class ChatGui extends JFrame {
     private JScrollPane jScrollPane;
     private JTextField jTextField;
     private JMenuBar jMenuBar;
+    private JList jList;
 
+    String[] users;
+
+    Color backGroundColor = new Color(43, 46, 57);
+    //Color backGroundColor = Color.BLACK;
     Style style;
     StyleContext styleContext;
     StyleConstants styleConstants;
@@ -36,6 +42,18 @@ public class ChatGui extends JFrame {
             }
 
         };
+        setBackground(backGroundColor);
+        //setUndecorated(true);
+        getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.WHITE));
+
+//        ComponentResizer cr = new ComponentResizer();
+//        cr.registerComponent(this);
+//        cr.setSnapSize(new Dimension(10, 10));
+//
+//        ComponentMover cm = new ComponentMover();
+//        cm.registerComponent(this);
+//        cm.setDragInsets( cr.getDragInsets() );
+//        cm.setSnapSize(new Dimension(10, 10));
         //jScrollPane = new JScrollPane();
         styleContext = new StyleContext();
         style = styleContext.addStyle("", null);
@@ -70,13 +88,40 @@ public class ChatGui extends JFrame {
         });
         //jTextPane.setText("Test");
         jTextPane.setEditable(false);
-        jTextField.setBackground(new Color(43, 46, 57));
+        jTextField.setBackground(backGroundColor);
         jTextField.setForeground(Color.WHITE);
 
-        jTextPane.setBackground(new Color(43,46,57));
+        jTextPane.setBackground(backGroundColor);
+        //String[] test = new String[] {"User List:    ", "test2   ", "Test3   "};
+        users = new String[] {"User List:   ", jChat.nick};
+        jList = new JList(users);
+        jList.setBackground(backGroundColor);
+        jList.setForeground(Color.white);
+        //jList.setSize(100, 100);
+
+        jMenuBar = new JMenuBar();
+        //jMenuBar.setLayout(new GridLayout());
+
+        //jMenuBar.setBackground(backGroundColor);
+        //jMenuBar.setForeground(backGroundColor);
+        JMenu jMenu = new JMenu("Test");
+        jMenu.setOpaque(true);
+        jMenu.setForeground(Color.WHITE);
+        //jMenu.setBackground(backGroundColor);
+        jMenu.add("Test");
+        jMenuBar.add(jMenu);
+        jMenuBar.setOpaque(true);
+        jMenuBar.setUI ( new BasicMenuBarUI()
+        {
+            public void paint ( Graphics g, JComponent c )
+            {
+                g.setColor ( backGroundColor );
+                g.fillRect ( 0, 0, c.getWidth (), c.getHeight () );
+            }
+        } );
+        jMenuBar.setForeground(Color.WHITE);
 
         try {
-            //create the font to use. Specify the size!
             String dirty = "C:\\Users\\Evan\\Google Drive\\dev\\JChat-2.0\\out\\production\\JChat Client 2.0\\Fonts\\OpenSans-Regular.ttf";
             Font roboto = Font.createFont(Font.TRUETYPE_FONT, new File(dirty)).deriveFont(15f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -84,6 +129,9 @@ public class ChatGui extends JFrame {
             ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File(dirty)));
             jTextPane.setFont(roboto);
             jTextField.setFont(roboto);
+            jList.setFont(roboto);
+            jMenu.setFont(roboto);
+            jMenuBar.setFont(roboto);
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -96,26 +144,21 @@ public class ChatGui extends JFrame {
 
         add(jScrollPane);
         add (jTextField, BorderLayout.SOUTH);
-        jMenuBar = new JMenuBar();
-        jMenuBar.setBackground(new Color(43, 46, 57));
-        jMenuBar.setForeground(new Color(43, 46, 57));
-        JMenu jMenu = new JMenu("Test");
-        jMenu.setBackground(new Color(43, 46, 57));
-        jMenu.add("Test");
-        jMenuBar.add(jMenu);
+        add(jList, BorderLayout.EAST);
+
         //Todo: Make menu bar work
-        //add(jMenuBar, BorderLayout.NORTH);
+        add(jMenuBar, BorderLayout.NORTH);
         //setLayout( new ScrollPaneLayout());
 
         pack();
         jTextField.setText("<" + jChat.nick + "> ");
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //setState(MAXIMIZED_BOTH);
+        setState(MAXIMIZED_BOTH);
         setExtendedState( getExtendedState()|MAXIMIZED_BOTH );
         //setBounds(100, 100, 100, 100);
         setResizable(true);
-        setBackground(new Color(43, 46, 57));
+        setBackground(backGroundColor);
         //append("Test", style);
         //styleConstants.setForeground(style, Color.RED);
         //append("Test", style);

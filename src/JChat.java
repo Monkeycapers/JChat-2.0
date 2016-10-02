@@ -28,6 +28,13 @@ public class JChat {
             // Set System L&F
             UIManager.setLookAndFeel(
                     UIManager.getSystemLookAndFeelClassName());
+            //UIManager.setLookAndFeel(
+                    //UIManager.getCrossPlatformLookAndFeelClassName());
+            //UIManager.put("MenuBar.background", Color.RED);
+            UIManager.put("Menu.background", new Color(43, 46, 57));
+            UIManager.put("Menu.foreground", Color.WHITE);
+            //UIManager.put("MenuItem.background", Color.MAGENTA);
+
         }
         catch (UnsupportedLookAndFeelException e) {
             // handle exception

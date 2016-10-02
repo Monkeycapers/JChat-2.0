@@ -61,10 +61,9 @@ public class Server implements Runnable {
                 while (isRunning) {
                     //Read message in
                     String strIn = in.readUTF();
-                    if (!strIn.equals(strOld)) {
-                        jChat.receiveMessage(strIn + "\n");
-                    }
-                    strOld = strIn;
+
+                    jChat.receiveMessage(strIn + "\n");
+
                 }
 
 

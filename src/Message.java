@@ -1,7 +1,14 @@
-/**
- * Created by Evan on 8/30/2016.
- */
-public class Message {
+import java.io.Serializable;
 
+public class Message implements Serializable {
+
+    String messageType;
+
+    String[] arguments;
+
+    public Message(String messageType, String[] arguments) {
+        this.messageType = messageType;
+        this.arguments = arguments;
+    }
 
 }

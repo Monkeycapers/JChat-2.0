@@ -1,9 +1,13 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import javax.swing.text.Document;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.io.File;
 
 /**
  * Created by Evan on 8/29/2016.
@@ -106,8 +110,23 @@ public class JChat {
         StyleContext styleContext = new StyleContext();
         //StyleConstants styleConstants = new StyleConstants();
         Style style = styleContext.addStyle("", null);
-
+        String[] spacesplit = message.replaceAll("\n", "").split(" ");
+        boolean highlite = false;
+        for (String s: spacesplit) {
+            if (s.equals(("@" + nick).replaceAll(" ", ""))) {
+                highlite = true;
+                ping();
+            }
+        }
         String[] split = message.split(",");
+        if (highlite) {
+            //StyleConstants.setBackground(style, Color.yellow);
+            StyleConstants.setBold(style, true);
+        }
+        else {
+            StyleConstants.setBackground(style, new Color(43, 46, 57));
+            StyleConstants.setBold(style, false);
+        }
         for (int i = 0; i <= split.length - 2; i += 2) {
             Color c;
             c = Color.BLACK;
@@ -132,5 +151,19 @@ public class JChat {
             chatGui.append(split[i + 1], style);
         }
        // chatGui.append(message, style);
+    }
+    public void ping() {
+        try {
+            Clip clip = AudioSystem.getClip();
+            AudioInputStream inputStream = AudioSystem.getAudioInputStream(
+                    JChat.class.getResourceAsStream("DiscordPing.wav"));
+
+            //AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File("C:\\Users\\Evan\\Documents\\GitHub\\JChat-2.0\\out\\production\\JChat Client 2.0\\DiscordPing.wav"));
+
+            clip.open(inputStream);
+            clip.start();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 }

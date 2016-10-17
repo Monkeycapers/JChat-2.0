@@ -102,23 +102,23 @@ public class Server implements Runnable {
                 }
             }
             else {
-                for (Command c : commands) {
-                    if (c.name.equals(name)) {
-                        String result = c.parse(message);
-                        if (result.equals("invalid")) {
-                            jChat.receiveMessage("c255255255,Invalid usage of: " + c.name + "\n" + c.help + "\n");
-                            break;
-                        }
-                        else {
-                            serverMessageSender.send(jChat.nick + "," + c.name + result);
-                            break;
-                        }
-                    }
-                }
+                //for (Command c : commands) {
+                    //if (c.name.equals(name)) {
+                       // String result = c.parse(message);
+                       // if (result.equals("invalid")) {
+                        //    jChat.receiveMessage("c255255255,Invalid usage of: " + c.name + "\n" + c.help + "\n");
+                        //    break;
+                      //  }
+                       // else {
+                        //    serverMessageSender.send(jChat.nick + "," + c.name + result);
+                        //    break;
+                      //  }
+                    //}
+                serverMessageSender.send(jChat.nick + " " + message);
             }
         }
         else {
-            serverMessageSender.send(jChat.nick + ",Message," + message);
+            serverMessageSender.send(jChat.nick + " Message " + message);
         }
     }
 }
